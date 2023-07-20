@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {  addDoc, collection, doc } from "firebase/firestore";
 import { db } from '../firebase';
 
-const AddCommunityUserScreen = ({navigation}) => {
+const CommunityAddUserScreen = ({navigation}) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -81,6 +81,6 @@ const AddCommunityUserScreen = ({navigation}) => {
   )
 }
 
-export default AddCommunityUserScreen
+export default CommunityAddUserScreen
 
 const styles = StyleSheet.create({})
