@@ -5,13 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import ResRegisterScreen from './screens/ResRegisterScreen';
 import VolRegisterScreen from './screens/VolRegisterScreen';
 import VolProfileScreen from './screens/VolProfileScreen';
-import ResFeedbackScreen from './screens/ResFeedbackScreen';
-import ResProfileScreen from './screens/ResProfileScreen';
-import CommunityEventsScreen from './screens/CommunityEventsScreen';
+import VolunteerEventsScreen from './screens/VolunteerEventsScreen';
+import EventDetailsScreen from './screens/EventDetailsScreen'
+import EventRequestsScreen from './screens/EventRequestsScreen'
+import GroupRegisterScreen from './screens/GroupRegisterScreen'
+import GroupUpdateScreen from './screens/GroupUpdateScreen'
 import VolFeedbackScreen from './screens/VolFeedbackScreen';
 
 const Stack = createNativeStackNavigator();

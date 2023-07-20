@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { collection, getDocs, doc } from "firebase/firestore";
 import { db, auth } from '../firebase';
 
-const CommunityEventsScreen = ( {navigation} ) => {
+const VolunteerEventsScreen = ( {navigation} ) => {
     const [events, setEvents] = useState([])
     
     useEffect(()=>{
@@ -109,7 +109,7 @@ const CommunityEventsScreen = ( {navigation} ) => {
 
   }
 
-export default CommunityEventsScreen
+export default VolunteerEventsScreen
 
 const styles = StyleSheet.create({
   container: {
