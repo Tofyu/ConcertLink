@@ -4,7 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from '../firebase';
 
-const VolRegisterScreen = () => {
+const VolRegisterScreen = ( {navigation} ) => {
   const [name, setName] = useState('')
   const [school, setSchool] = useState('')
   const [grade, setGrade] = useState('')

@@ -3,14 +3,14 @@ import React, { useState, useEffect } from 'react'
 import { collection, getDocs, doc } from "firebase/firestore";
 import { db, auth } from '../firebase';
 
-const VolFeedbackScreen = () => {
+const VolFeedbackScreen = ( {navigation, route} ) => {
     const [feedbacks, setFeedbacks] = useState([])
-    
+    const { eventID } = route.params;    
    
 
     const fetchData = async () => {
       let feedbacksFromDB = [];
-      const querySnapshot = await getDocs(collection(db, 'events', "FT1bbkd30vO2hvVRPR4w", "feedback"));
+      const querySnapshot = await getDocs(collection(db, 'events', eventID, "feedback"));
       const docsData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       console.log("+++++++++++++++++++++++++++++++++++", docsData);
     
