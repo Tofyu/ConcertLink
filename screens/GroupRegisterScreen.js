@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { collection, addDoc, getDocs } from "firebase/firestore"; 
 import { db } from '../firebase'
 
-const GroupRegisterScreen = () => {
+const GroupRegisterScreen = ( {navigation} ) => {
   const [name, setName] = useState('')
   const [location, setLocation] = useState('')
   const [email, setEmail] = useState('')

@@ -1,75 +1,87 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import LoginScreen from './screens/LoginScreen';
 import VolRegisterScreen from './screens/VolRegisterScreen';
 import VolProfileScreen from './screens/VolProfileScreen';
 import VolunteerEventsScreen from './screens/VolunteerEventsScreen';
-import EventDetailsScreen from './screens/EventDetailsScreen'
-import EventRequestsScreen from './screens/EventRequestsScreen'
-import GroupRegisterScreen from './screens/GroupRegisterScreen'
-import GroupUpdateScreen from './screens/GroupUpdateScreen'
+import EventDetailsScreen from './screens/EventDetailsScreen';
+import EventRequestsScreen from './screens/EventRequestsScreen';
+import GroupRegisterScreen from './screens/GroupRegisterScreen';
+import GroupUpdateScreen from './screens/GroupUpdateScreen';
 import VolFeedbackScreen from './screens/VolFeedbackScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const ProfileStack = () => {
+const EventsStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Resident Profile" component={ResProfileScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Volunteer Profile" component={VolProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Volunteer Events" component={VolunteerEventsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Volunteer Feedback" component={VolFeedbackScreen} options={{ headerShown: false }} />
+   
     </Stack.Navigator>
   );
 };
 
-const EventStack = () => {
+const ManagerStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Community Events" component={CommunityEventsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Resident Feedback" component={ResFeedbackScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Volunteer Feedback" component={VolFeedbackScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Event Requests" component={EventRequestsScreen} options={{ headerShown: false }} />
+         <Stack.Screen name="Event Details" component={EventDetailsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Register" component={GroupRegisterScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Update" component={GroupUpdateScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
+
+const BottomTab = () =>{
+  const Tab = createBottomTabNavigator();
+
+  return(
+    <Tab.Navigator>
+        <Tab.Screen name="Events" component={EventsStack} options={{
+          headerShown: false,
+          tabBarLabel: 'Events',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="calendar-check" color={color} size={size} />
+          ),
+        }}
+        />
+        <Tab.Screen name="Volunteer Profile" component={VolProfileScreen} options={{
+          headerShown: false,
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+        />
+        <Tab.Screen name="Event Requests" component={ManagerStack} options={{
+          headerShown: false,
+          tabBarLabel: 'Manager Page',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account-tie" color={color} size={size} />
+          ),
+        }}
+        />
+      </Tab.Navigator>
+  )
+}
+
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Resident Register" component={ResRegisterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Volunteer Register" component={VolRegisterScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Community Events" component={TabNavigator} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
-
-const TabNavigator = () => {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-
-          if (route.name === 'Events') {
-            iconName = 'calendar';
-          } else if (route.name === 'Profile') {
-            iconName = 'account';
-          }
-
-          return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
-        },
-      })}
-    >
-      <Tab.Screen name="Events" component={EventStack} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
-    </Tab.Navigator>
+    <Stack.Navigator>
+    <Stack.Screen name="Login" component={LoginScreen} options={{headerShown:false}}/>
+    <Stack.Screen name="Volunteer Register" component={VolRegisterScreen} options={{ headerShown: false }}/>
+    <Stack.Screen name="User BottomTab" component={BottomTab} options={{headerShown:false}}/>
+  </Stack.Navigator>
+  </NavigationContainer>
   );
 };
 

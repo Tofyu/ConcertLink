@@ -87,7 +87,7 @@ const VolunteerEventsScreen = ( {navigation} ) => {
           )
         ))}
       </View>
-        <Button title="Send feedback" onPress={() => navigation.navigate('Resident Feedback', {
+        <Button title="See feedback" onPress={() => navigation.navigate('Volunteer Feedback', {
             eventID: item.id
           })} />
         

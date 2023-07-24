@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { collection, addDoc, getDocs } from "firebase/firestore"; 
+import { collection, updateDoc, getDocs } from "firebase/firestore"; 
 import { db } from '../firebase'
 
-const GroupUpdateScreen = () => {
+const GroupUpdateScreen = ( {navigation} ) => {
   const [name, setName] = useState('')
   const [location, setLocation] = useState('')
   const [email, setEmail] = useState('')
@@ -25,7 +25,7 @@ const GroupUpdateScreen = () => {
 
   const Submit = async() => {
     try {
-      const docRef = await addDoc(collection(db, "groups"), {
+      const docRef = await updateDoc(collection(db, "groups"), {
         name: name,
         location: location,
         email: email,
@@ -44,7 +44,7 @@ const GroupUpdateScreen = () => {
       <TextInput onChangeText = {setLocation} placeholder = 'Location' />
       <TextInput onChangeText = {setEmail} placeholder = 'Email' />
       <TextInput onChangeText = {setPhone} placeholder = 'Phone' />
-      <Button title = "Register" onPress = {Submit}/>
+      <Button title = "Update" onPress = {Submit}/>
     </View>
   )
 }
