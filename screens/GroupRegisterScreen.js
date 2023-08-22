@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { collection, addDoc, getDocs } from "firebase/firestore"; 
+import { Text, TextInput, Button } from 'react-native-paper';
 import { db } from '../firebase'
 
 const GroupRegisterScreen = ( {navigation} ) => {
