@@ -14,6 +14,7 @@ import EventRequestsScreen from './screens/EventRequestsScreen';
 import GroupRegisterScreen from './screens/GroupRegisterScreen';
 import GroupUpdateScreen from './screens/GroupUpdateScreen';
 import VolFeedbackScreen from './screens/VolFeedbackScreen';
+import VolEventDetailsScreen from './screens/VolEventDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,7 +23,9 @@ const EventsStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Volunteer Events" component={VolunteerEventsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Volunteer Event Details" component={VolEventDetailsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Volunteer Feedback" component={VolFeedbackScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Register" component={GroupRegisterScreen} options={{ headerShown: false }} />
    
     </Stack.Navigator>
   );
@@ -33,7 +36,6 @@ const ManagerStack = () => {
     <Stack.Navigator>
         <Stack.Screen name="Event Requests" component={EventRequestsScreen} options={{ headerShown: false }} />
          <Stack.Screen name="Event Details" component={EventDetailsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Group Register" component={GroupRegisterScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Group Update" component={GroupUpdateScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
@@ -60,7 +62,7 @@ const BottomTab = () =>{
           ),
         }}
         />
-        <Tab.Screen name="Event Requests" component={ManagerStack} options={{
+        <Tab.Screen name="Manager" component={ManagerStack} options={{
           headerShown: false,
           tabBarLabel: 'Manager Page',
           tabBarIcon: ({ color, size }) => (
