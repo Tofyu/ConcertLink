@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Button, Input } from "@rneui/themed";
 import { collection, getDoc, updateDoc, doc } from "firebase/firestore";
@@ -13,9 +13,10 @@ const VolProfileScreen = ({ navigation }) => {
   const [volunteerGroup, setGroup] = useState()
   const [phone, setPhone] = useState()
   const [email, setEmail] = useState()
+  const userid = auth.currentUser;
 
   const fetchData = async () => {
-    const docRef = doc(db, "volunteers", "s5gG3q6UTQFwkSZR7SnT");
+    const docRef = doc(db, "volunteers", userid.uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -32,7 +33,7 @@ const VolProfileScreen = ({ navigation }) => {
 
   const save = async () => {
     try {
-      const docRef = await updateDoc(collection(db, "volunteers", "s5gG3q6UTQFwkSZR7SnT"), {
+      const docRef = await updateDoc(collection(db, "volunteers", userid.uid), {
         name: name,
         grade: grade,
         school: school,
@@ -42,7 +43,7 @@ const VolProfileScreen = ({ navigation }) => {
 
       });
 
-      navigation.navigate("Community Events")
+      navigation.navigate("Volunteer Events")
 
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
@@ -51,15 +52,18 @@ const VolProfileScreen = ({ navigation }) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Volunteer Profile</Text>
 
+      <Text style = {styles.text}> Name </Text>
       <Input
         style={styles.input}
         placeholder={user.name}
         onChangeText={setName}
         value={name}
       />
+      <Text style = {styles.text}> Grade </Text>
 
       <Input
         style={styles.input}
@@ -67,6 +71,7 @@ const VolProfileScreen = ({ navigation }) => {
         onChangeText={setGrade}
         value={grade}
       />
+      <Text style = {styles.text}> School </Text>
 
       <Input
         style={styles.input}
@@ -74,6 +79,7 @@ const VolProfileScreen = ({ navigation }) => {
         onChangeText={setSchool}
         value={school}
       />
+      <Text style = {styles.text}> Instrument </Text>
 
       <Input
         style={styles.input}
@@ -81,12 +87,14 @@ const VolProfileScreen = ({ navigation }) => {
         onChangeText={setInstrument}
         value={instrument}
       />
+      <Text style = {styles.text}> Volunteer Group </Text>
 
       <Input
         style={styles.input}
         placeholder={user.volunteerGroup}
         value={volunteerGroup}
       />
+      <Text style = {styles.text}> Phone </Text>
 
       <Input
         style={styles.input}
@@ -94,6 +102,7 @@ const VolProfileScreen = ({ navigation }) => {
         onChangeText={setPhone}
         value={phone}
       />
+      <Text style = {styles.text}> Email </Text>
 
       <Input
         style={styles.input}
@@ -108,7 +117,8 @@ const VolProfileScreen = ({ navigation }) => {
         titleStyle={styles.buttonText}
         onPress={save}
       />
-    </View>
+    </SafeAreaView>
+    </ScrollView>
   )
 }
 
@@ -120,9 +130,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+    paddingVertical:20,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 30,
+    fontWeight: '700',
+    letterSpacing: 2,
+    paddingTop: 15,
+    paddingBottom: 15
+  },
+  text: {
+    fontSize: 15,
     fontWeight: '700',
     letterSpacing: 2,
     paddingTop: 15,
