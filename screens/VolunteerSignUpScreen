@@ -1,0 +1,117 @@
+import { StyleSheet, Text, View, SafeAreaView } from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { TextInput, Button } from 'react-native-paper';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import {db, auth} from '../firebase'
+import { addDoc, collection, setDoc, doc,getDocs } from "firebase/firestore"; 
+import { Picker } from '@react-native-picker/picker'; // Import Picker from the new package
+
+
+
+const VolunteerSignUpScreen = () => {
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [name, setName] = useState("")
+    const [phone, setPhone] = useState("")
+    const [grade, setGrade] = useState("")
+    const [school, setSchool] = useState("")
+    const [instrument, setInstrument] = useState("")
+    const [groups, setGroups] = useState([])
+    const [selectedGroup, setSelectedGroup] = useState()
+  
+    //Create an account
+    const signUpUser = async() => { 
+      createUserWithEmailAndPassword(auth, email, password)
+      .then( (userCredential) => {
+          // Signed in 
+          const user = userCredential.user;
+          addUser(user.uid)
+          console.log("User created", user)
+          // ...
+      })
+      .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // ..
+      });
+    }
+
+    useEffect(() => {
+        const fetchGroups = async () => {
+          console.log("Fetch data")
+          const querySnapshot = await getDocs(collection(db, "volunteerGroups"));
+          const groupList = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          console.log("List", groupList)
+          setGroups(groupList);
+        };
+    
+        fetchGroups();
+      }, []);
+
+    useEffect(()=>{
+        console.log("Group list", groups)
+    },[groups])
+    
+    
+    //Add an user in users collection
+    const addUser = async (id) => { 
+      try {
+        const userDocRef = doc(db, "users", id);
+    
+        await setDoc(userDocRef, {
+          name:name,
+          phone:phone,
+          grade:grade,
+          email:email,
+          school:school,
+          instrument:instrument,
+          groupID: selectedGroup.id,
+          groupName: selectedGroup.name
+        });
+    
+        console.log("Document written with ID: ", id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+
+    return (
+        <SafeAreaView>
+            <View style={{margin:10, justifyContent: 'space-around' }}>
+            <Text variant="titleLarge">Sign Up</Text> 
+            <View style={{marginVertical:40, justifyContent:'space-around'}}>
+                <TextInput label="Email" value={email} mode ="outlined" onChangeText={text => setEmail(text) } style={{ marginBottom: 10 }} />
+                <TextInput label="Password" value={password} onChangeText={text => setPassword(text)} secureTextEntry={true} mode ="outlined" style={{ marginBottom: 10 }} />
+                <TextInput label="Name" value={name} onChangeText={text => setName(text)} mode ="outlined" style={{ marginBottom: 10 }} />
+                <TextInput label="Phone" value={phone} mode ="outlined" onChangeText={text => setPhone(text) } style={{ marginBottom: 10 }} />
+                <TextInput label="Grade" value={grade} onChangeText={text => setGrade(text)} mode ="outlined" style={{ marginBottom: 10 }} />
+                <TextInput label="School" value={school} onChangeText={text => setSchool(text)} mode ="outlined" style={{ marginBottom: 10 }} />
+                <TextInput label="Instrument" value={instrument} onChangeText={text => setInstrument(text)} mode ="outlined" style={{ marginBottom: 10 }} />
+            </View>
+            <Text>Select Volunteer Group</Text>
+            <Picker
+                selectedValue={selectedGroup ? selectedGroup.id : ''}
+                onValueChange={(itemValue, itemIndex) => {
+                    const selectedGroupObject = groups.find((group) => group.id === itemValue);
+                    setSelectedGroup(selectedGroupObject);
+                }}
+                >
+                <Picker.Item label="Select a group" value="" />
+                {groups.map((group) => (
+                <Picker.Item key={group.id} label={group.name} value={group.id} />
+                ))}
+            </Picker>
+            <Button icon="camera" mode="elevated" onPress={signUpUser}>
+                Sign Up
+            </Button>
+          </View>
+        </SafeAreaView>
+      )
+}
+
+export default VolunteerSignUpScreen
+
+const styles = StyleSheet.create({})
