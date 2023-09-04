@@ -33,23 +33,32 @@ const VolProfileScreen = ({ navigation }) => {
 
   const save = async () => {
     try {
-      const docRef = await updateDoc(collection(db, "volunteers", userid.uid), {
-        name: name,
-        grade: grade,
-        school: school,
-        instrument: instrument,
-        phone: phone,
-        email: email
-
-      });
-
-      navigation.navigate("Volunteer Events")
-
-      console.log("Document written with ID: ", docRef.id);
+      // Create an object to hold the fields you want to update
+      const updatedData = {};
+  
+      // Check if each field has a valid value and include it in the update
+      if (name) updatedData.name = name;
+      if (grade) updatedData.grade = grade;
+      if (school) updatedData.school = school;
+      if (instrument) updatedData.instrument = instrument;
+      if (phone) updatedData.phone = phone;
+      if (email) updatedData.email = email;
+  
+      console.log("########################", userid.uid)
+      // Check if there are any fields to update
+      if (Object.keys(updatedData).length > 0) {
+        const docRef = await updateDoc(doc(db, "volunteers", userid.uid), updatedData);
+        //console.log("Document updated with ID: ", docRef.id);
+        navigation.navigate("Volunteer Events");
+  
+        
+      } else {
+        console.log("No fields to update.");
+      }
     } catch (e) {
-      console.error("Error adding document: ", e);
+      console.error("Error updating document: ", e);
     }
-  }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
