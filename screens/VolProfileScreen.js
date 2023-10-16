@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { Button, Input } from "@rneui/themed";
-import { collection, getDoc, updateDoc, doc } from "firebase/firestore";
+import { Button, TextInput } from 'react-native-paper';
+import { collection, getDoc, updateDoc, doc, getDocs } from "firebase/firestore";
 import { db, auth } from '../firebase';
+import { Picker } from '@react-native-picker/picker'; // Import Picker from the new package
 
 const VolProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState({})
@@ -10,175 +11,191 @@ const VolProfileScreen = ({ navigation }) => {
   const [grade, setGrade] = useState()
   const [school, setSchool] = useState()
   const [instrument, setInstrument] = useState()
-  const [volunteerGroup, setGroup] = useState()
+  const [groupName, setGroupName] = useState()
   const [phone, setPhone] = useState()
   const [email, setEmail] = useState()
+  const [groups, setGroups] = useState([])
+  const [selectedGroup, setSelectedGroup] = useState()
   const userid = auth.currentUser;
 
-  const fetchData = async () => {
-    const docRef = doc(db, "volunteers", userid.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      setUser(docSnap.data());
-      console.log("Document data:", docSnap.data());
-    } else {
-      console.log("No such document!");
-    }
-  };
-
   useEffect(() => {
-    fetchData()
-  }, [])
+    //get volunteer group list for picker
+    const fetchGroups = async () => {
+      console.log("Fetch data")
+      const querySnapshot = await getDocs(collection(db, "volunteerGroups"));
+      const groupList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setGroups(groupList);
+      console.log(groupList)
+    };
+
+    //Read user information
+    const fetchUserData = async () => {
+      const docRef = doc(db, "volunteers", userid.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const user = docSnap.data()
+        setUser(user);
+        setName(user.name)
+        setEmail(user.email || 'Enter Email')
+        setGrade(user.grade || 'Enter grade')
+        setInstrument(user.instrument || 'Enter instrument')
+        setPhone(user.phone || 'Enter phone')
+        setSelectedGroup[docSnap.data().volunteerGroupID]
+      } else {
+        console.log("No such document!");
+      }
+    };
+
+    fetchGroups();
+    fetchUserData();
+
+  }, []);
 
   const save = async () => {
+    const userRef = doc(db, "volunteers", userid.uid);
+
     try {
-      // Create an object to hold the fields you want to update
-      const updatedData = {};
-  
-      // Check if each field has a valid value and include it in the update
-      if (name) updatedData.name = name;
-      if (grade) updatedData.grade = grade;
-      if (school) updatedData.school = school;
-      if (instrument) updatedData.instrument = instrument;
-      if (phone) updatedData.phone = phone;
-      if (email) updatedData.email = email;
-  
-      console.log("########################", userid.uid)
-      // Check if there are any fields to update
-      if (Object.keys(updatedData).length > 0) {
-        const docRef = await updateDoc(doc(db, "volunteers", userid.uid), updatedData);
-        //console.log("Document updated with ID: ", docRef.id);
-        navigation.navigate("Volunteer Events");
-  
-        
-      } else {
-        console.log("No fields to update.");
-      }
+      const docRef = await updateDoc(userRef, {
+        name: name || "",
+        grade: grade || "",
+        phone: phone || "",
+        instrument: instrument || "",
+        school: school || "",
+        email: email || "",
+        volunteerGroupID: selectedGroup.ID || "",
+        groupName: selectedGroup.name || ""
+      });
+      console.log("Profile changed")
+      navigation.navigate("Volunteer Events")
     } catch (e) {
-      console.error("Error updating document: ", e);
+      console.error("Error adding document: ", e);
     }
+  }
+
+  const deleteAccount = async () => {
+    // Show an alert to confirm account deletion
+    Alert.alert(
+      'Confirm Account Deletion',
+      'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            // Delete the user's account in Firebase Authentication
+            try {
+              await auth.currentUser.delete();
+              console.log('User account deleted successfully.');
+              // Navigate to the login screen or any other appropriate screen after deletion
+              navigation.navigate('Login'); // Change 'Login' to the desired screen
+            } catch (error) {
+              console.error('Error deleting user account:', error.message);
+              // Handle the error, display an error message, or provide user feedback
+            }
+          },
+          style: 'destructive', // The button is styled to indicate a destructive action
+        },
+      ],
+      { cancelable: true } // Allow the user to tap outside the alert to dismiss it
+    );
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent}>
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Volunteer Profile</Text>
 
-      <Text style = {styles.text}> Name </Text>
-      <Input
+      <TextInput
         style={styles.input}
-        placeholder={user.name}
         onChangeText={setName}
         value={name}
       />
-      <Text style = {styles.text}> Grade </Text>
 
-      <Input
+      <TextInput
         style={styles.input}
         placeholder={user.grade}
         onChangeText={setGrade}
         value={grade}
       />
-      <Text style = {styles.text}> School </Text>
 
-      <Input
+      <TextInput
         style={styles.input}
         placeholder={user.school}
         onChangeText={setSchool}
         value={school}
       />
-      <Text style = {styles.text}> Instrument </Text>
 
-      <Input
+      <TextInput
         style={styles.input}
         placeholder={user.instrument}
         onChangeText={setInstrument}
         value={instrument}
       />
-      <Text style = {styles.text}> Volunteer Group </Text>
 
-      <Input
-        style={styles.input}
-        placeholder={user.volunteerGroup}
-        value={volunteerGroup}
-      />
-      <Text style = {styles.text}> Phone </Text>
-
-      <Input
+      <TextInput
         style={styles.input}
         placeholder={user.phone}
         onChangeText={setPhone}
         value={phone}
       />
-      <Text style = {styles.text}> Email </Text>
+      
 
-      <Input
+
+      <TextInput
         style={styles.input}
-        placeholder={user.email}
         onChangeText={setEmail}
         value={email}
       />
+      <Picker
+        selectedValue={selectedGroup ? selectedGroup.id : ''}
+        onValueChange={(itemValue, itemIndex) => {
+          const selectedGroupObject = groups.find((group) => group.id === itemValue);
+          setSelectedGroup(selectedGroupObject);
+        }}
+      >
+        <Picker.Item label="Select a group" value="" />
+        {groups.map((group) => (
+          <Picker.Item key={group.id} label={group.name} value={group.id} />
+        ))}
+      </Picker>
+      <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
+        <Button onPress={save} mode="elevated"> Save </Button>
+        <Button onPress={deleteAccount} mode="contained">
 
-      <Button
-        title="Save"
-        buttonStyle={styles.button}
-        titleStyle={styles.buttonText}
-        onPress={save}
-      />
+          Delete Account
+        </Button>
+      </View>
+
+
     </SafeAreaView>
-    </ScrollView>
   )
 }
 
 export default VolProfileScreen
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingVertical:20,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  title: {
+  title:{
     fontSize: 30,
     fontWeight: '700',
     letterSpacing: 2,
+    justifyContent: 'center',
+    textAlign: 'center',
     paddingTop: 15,
     paddingBottom: 15
   },
-  text: {
-    fontSize: 15,
-    fontWeight: '700',
-    letterSpacing: 2,
-    paddingTop: 15,
-    paddingBottom: 15
-  },
-  input: {
-    height: 40,
-    width: 300,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-  },
-  button: {
-    backgroundColor: '#27D5F5',
-    borderRadius: 15,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  buttonText: {
+  text1:{
+    fontSize: 20,
     fontWeight: 'bold',
-    fontSize: 18,
-    color: '#fff',
-  },
-});
+    letterSpacing: 1,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    justifyContent: 'center'
+  }
+})
