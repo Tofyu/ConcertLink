@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
+import { StyleSheet, View, SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { collection, updateDoc, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, getDocs } from "firebase/firestore"; 
+import { Text, TextInput, Button } from 'react-native-paper';
 import { db } from '../firebase'
 
 const GroupUpdateScreen = ( {navigation} ) => {
@@ -25,7 +26,7 @@ const GroupUpdateScreen = ( {navigation} ) => {
 
   const Submit = async() => {
     try {
-      const docRef = await updateDoc(collection(db, "groups"), {
+      const docRef = await addDoc(collection(db, "groups"), {
         name: name,
         location: location,
         email: email,
@@ -38,14 +39,16 @@ const GroupUpdateScreen = ( {navigation} ) => {
   }
 
   return (
-    <View>
-      <Text>Register</Text>
-      <TextInput onChangeText = {setName} placeholder = 'Name' />
-      <TextInput onChangeText = {setLocation} placeholder = 'Location' />
-      <TextInput onChangeText = {setEmail} placeholder = 'Email' />
-      <TextInput onChangeText = {setPhone} placeholder = 'Phone' />
-      <Button title = "Update" onPress = {Submit}/>
-    </View>
+    <SafeAreaView>
+      <View>
+        <Text variant = "headlineSmall">Update Data</Text>
+        <TextInput onChangeText = {setName} placeholder = 'Name' />
+        <TextInput onChangeText = {setLocation} placeholder = 'Location' />
+        <TextInput onChangeText = {setEmail} placeholder = 'Email' />
+        <TextInput onChangeText = {setPhone} placeholder = 'Phone' />
+        <Button mode = 'elevated' onPress = {Submit} style = {{justifyContent: 'flex-end'}}>Update</Button>
+      </View>
+    </SafeAreaView>
   )
 }
 

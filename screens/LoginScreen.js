@@ -1,59 +1,72 @@
-import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, Text, View, ImageBackground  } from "react-native";
-import { auth, db } from "../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from 'react';
+import { View, StyleSheet, Text } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  //Login function
+  //Test login: Vol@mail.com
   const login = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        navigation.navigate("User BottomTab")
-        // ...
+      .then(() => {
+        // Login successful
+        navigation.navigate('User BottomTab');
       })
-      .catch((error) => {
-        const errorCode = error.code;
+      .catch(error => {
         const errorMessage = error.message;
+        setErrorMessage(errorMessage);
       });
-    }
+  };
+
   return (
-    
-    <View style={{marginTop:230}}> 
+    <View style={styles.container}>
       <TextInput
         placeholder="Enter your email"
-        leftIcon={{ type: "material", name: "email" }}
-        styles={styles}
+        leftIcon={{ type: 'material', name: 'email' }}
         label="Email"
         onChangeText={setEmail}
+        value={email}
       />
 
       <TextInput
         placeholder="Enter your password"
-        leftIcon={{ type: "material", name: "lock" }}
-        style={styles}
+        leftIcon={{ type: 'material', name: 'lock' }}
         label="Password"
         onChangeText={setPassword}
+        value={password}
         secureTextEntry
       />
-      <View style={{alignItems:'center'}}>
-        <Button onPress={login} > Login </Button>
-        
 
-        <Button onPress={() => navigation.navigate("Register")} > Create Account </Button>
-        
-      </View>
+      {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+
+      <Button mode="contained" onPress={login} style={styles.button}>
+        Login
+      </Button>
+
+      <Button onPress={() => navigation.navigate('Register')} style={styles.button}>
+        Create Account
+      </Button>
     </View>
-    
-  )
-}
+  );
+};
 
-export default LoginScreen
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 230,
+    paddingHorizontal: 20,
+  },
+  button: {
+    marginTop: 16,
+  },
+  errorMessage: {
+    color: 'red',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+});
 
-const styles = StyleSheet.create({})
+export default LoginScreen;

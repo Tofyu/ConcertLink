@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import DropDownPicker from 'react-native-dropdown-picker';
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from '../firebase';
+import { collection, addDoc, getDocs, setDoc, doc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db, auth } from '../firebase';
 
 const VolRegisterScreen = ( {navigation} ) => {
   const [name, setName] = useState('')
@@ -14,7 +15,7 @@ const VolRegisterScreen = ( {navigation} ) => {
   const [password, setPassword] = useState('')
   const [groups, setGroups] = useState([])
   const [open, setOpen] = useState(false);
-  const [volGroup, setVolGroup] = useState();
+  const [volGroup, setVolGroup] = useState(null);
 
   const fetchData = async () => {
     const querySnapshot = await getDocs(collection(db, 'volunteerGroups'));
@@ -26,22 +27,49 @@ const VolRegisterScreen = ( {navigation} ) => {
     fetchData();
   }, []);
 
+  //Create an account
   const signUp = async () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        console.log("User created", user)
+        addUser(user.uid)
+        navigation.navigate("Login")
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  }
+
+  const addUser = async (id) => {
     try {
-      const docRef = await addDoc(collection(db, "volunteers"), {
+      const userDocRef = doc(db, "volunteers", id);
+      let userGroupID = null;
+      let userGroupName = null;
+
+      if(volGroup){
+        userGroupName = groups.find(item => item.value == volGroup).name
+        userGroupID = volGroup
+      }
+
+
+      await setDoc(userDocRef, {
         name: name,
         phone: phone,
         email: email,
         grade: grade,
         school: school,
         instrument: instrument,
-        volunteerGroupName: groups.find(item => item.value == volGroup).label,
-        volunteerGroupID: volGroup,
+        volunteerGroupName: userGroupName,
+        volunteerGroupID: userGroupID,
         password: password,
       });
 
-      navigation.navigate("Login");
-      console.log("Document written with ID: ", docRef.id);
+      console.log("Document written with ID: ", userDocRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -72,7 +100,7 @@ const VolRegisterScreen = ( {navigation} ) => {
         placeholder="Volunteer Group"
       />
       <TextInput style={styles.input} placeholder='Email' onChangeText={email => setEmail(email)} />
-      <TextInput style={styles.input} placeholder='Password' onChangeText={password => setPassword(password)} />
+      <TextInput style={styles.input} secureTextEntry = {true} placeholder='Password' onChangeText={password => setPassword(password)} />
 
       <Button title="Sign Up" onPress={signUp} />
 

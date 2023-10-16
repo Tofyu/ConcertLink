@@ -1,15 +1,22 @@
-import {initializeApp} from "firebase/app";
-import {getFirestore} from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyB6_9V_vNqliVuGIqBr_uJLxU3_vOclkDI",
-    authDomain: "concertlink-db295.firebaseapp.com",
-    projectId: "concertlink-db295",
-    storageBucket: "concertlink-db295.appspot.com",
-    messagingSenderId: "503775640955",
-    appId: "1:503775640955:web:2bbb9e1e00f59cade311de"
+    apiKey: "AIzaSyAN0Cl8Z-KP6sUYFAG46-c4eeoq_q7Hvc8",
+    authDomain: "concertlink-3e652.firebaseapp.com",
+    projectId: "concertlink-3e652",
+    storageBucket: "concertlink-3e652.appspot.com",
+    messagingSenderId: "630341825141",
+    appId: "1:630341825141:web:19c0be70df5ba2a1f73e3c"
   };
 
-export const app = initializeApp(firebaseConfig)
-export const db = getFirestore(app)
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+
+// Initialize Cloud Firestore and get a reference to the service
+export const db = getFirestore(app);
+export const auth = getAuth();
+

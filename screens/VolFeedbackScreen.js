@@ -1,7 +1,8 @@
-import { StyleSheet, Button, Text, TextInput, View, FlatList, SafeAreaView} from 'react-native'
+import { StyleSheet, Button, TextInput, View, FlatList, SafeAreaView} from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { collection, getDocs, doc } from "firebase/firestore";
 import { db, auth } from '../firebase';
+import {Text, Divider} from 'react-native-paper'
 
 const VolFeedbackScreen = ( {navigation, route} ) => {
     const [feedbacks, setFeedbacks] = useState([])
@@ -39,17 +40,26 @@ const VolFeedbackScreen = ( {navigation, route} ) => {
           <Text style={styles.subLabel}>{item.comments}</Text>
         </View>
       );
+
+      const renderEmptyComponent = () => (
+        <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1, marginTop:20 }}>
+          <Text>No feedback posted</Text>
+        </View>
+      );
       
     return (
       
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+         <Text variant="titleMedium" style={{ fontWeight: "bold" }}>Event Feedback</Text>
+         <Divider/>
       <FlatList 
         data={feedbacks}
         keyExtractor={(item, index) => item.id + index}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
+        ListEmptyComponent={renderEmptyComponent}
       />
-    </View>
+    </SafeAreaView>
       
     )
 
