@@ -1,13 +1,16 @@
 import { StyleSheet, SafeAreaView, FlatList } from 'react-native'
 import { Text, Card, IconButton, Button } from 'react-native-paper'
 import React, { useState, useEffect } from 'react'
-import { db } from '../firebase'
+import { db, addDoc } from '../firebase'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const VolunteerAvailableDatesScreen = () => {
+const VolunteerAvailableDatesScreen = ({navigation, route}) => {
     const [date, setDate] = useState(new Date());
     const [dates, setDates] = useState([])
     const [showPicker, setShowPicker] = useState(false);
+
+    const{groupID} = route.params
+
 
 
     useEffect(() => {
@@ -17,7 +20,7 @@ const VolunteerAvailableDatesScreen = () => {
     const fetchData = async () => {
         let datesFromDB = []
 
-        const querySnapshot = await getDocs(query(collection(db, "volunteerGroups", "nX4hpNsXtKEOFlIKeNOa", "availabilities")));
+        const querySnapshot = await getDocs(query(collection(db, "volunteerGroups", groupID, "availabilities")));
         querySnapshot.forEach((doc) => {
             datesFromDB.push({...doc.data(), id:doc.id})
         });
@@ -25,12 +28,20 @@ const VolunteerAvailableDatesScreen = () => {
     }
 
     const remove = (id) => {
-        deleteDoc(doc(db, "volunteerGroups", "nX4hpNsXtKEOFlIKeNOa", "availabilities", id))
+        deleteDoc(doc(db, "volunteerGroups", groupID, "availabilities", id))
         fetchData()
     }
 
-    const addAvailableDate = () => { 
-        
+    const addAvailableDate = async() => { 
+        try{
+        const docRefRating = await addDoc(collection(db, "volunteerGroups", groupID, "availabilities", id), {
+            dateTime: date,
+            isFilled:false
+          });
+          console.log("Added")
+        } catch (e) {
+            console.error("Error adding document: ", e);
+          }
      }
 
     const onDateChange = (event, selectedDate) => {

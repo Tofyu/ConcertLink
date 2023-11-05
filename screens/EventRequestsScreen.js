@@ -9,6 +9,7 @@ const EventRequestsScreen = ({navigation}) => {
     const [requests, setRequests] = useState([])
     const [selected, setSelected] = useState("")
     const options = [{key:'1', value:'accepted'}, {key:'2', value:'declined'}]
+    const [groupID, setGroupID] = useState()
     const user = auth.currentUser;
 
     const getVolunteerGroupID = async () => {
@@ -19,6 +20,7 @@ const EventRequestsScreen = ({navigation}) => {
     
         if (docSnap.exists()) {
           groupID = docSnap.data().volunteerGroupID;
+          set
         } else {
           console.log('No such document!');
         }
@@ -153,7 +155,8 @@ const fetchCommunityDocument = async (communityID) => {
     return (
         <SafeAreaView>
           <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-      <IconButton icon="account-edit" size={20} onPress={() => {navigation.navigate("Group Update")}} />
+      <IconButton icon="account-edit" size={30} onPress={() => {navigation.navigate("Group Update", {groupID:groupID })}} />
+      <IconButton icon="calendar-month" size={30} onPress={() => {navigation.navigate("AvailableDate", {groupID:groupID })}} />
     </View>
             <View style = {{paddingTop:20, paddingHorizontal:15}}>
             <Divider />

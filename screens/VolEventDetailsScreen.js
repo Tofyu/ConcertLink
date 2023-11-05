@@ -35,9 +35,9 @@ const VolEventDetailsScreen = ({ route }) => {
     if (eventDetails) {
       return (
         <View style={styles.item}>
-          <Text style={styles.label}>{eventDetails.volunteerGroupName}</Text>
-          <Text style={styles.subLabel}>Date:</Text>
-          <Text style={styles.info}>
+          <Text style={styles.locationTitle}>{eventDetails.communityName}</Text>
+          <Text style={styles.dateSubtitle}>Date:</Text>
+          <Text style={styles.dateInfo}>
             {eventDetails.dateTime.toDate().toLocaleString([], {
               year: 'numeric',
               month: 'long',
@@ -46,15 +46,14 @@ const VolEventDetailsScreen = ({ route }) => {
               minute: '2-digit'
             })}
           </Text>
-          <Text style={styles.subLabel}>Location:</Text>
-          <Text style={styles.info}>{eventDetails.communityName}</Text>
-          <Text style={styles.subLabel}>Songs:</Text>
+          <Text style={styles.songsTitle}>Songs:</Text>
           <View style={styles.songsContainer}>
             {eventDetails.songsData.map((song, index) => (
-              <View style={{flexDirection:'row'}}>
-              <Text key={index} style={styles.songName}>Title: {song.name}</Text>
-              <Text style={styles.songName}> Composer:{song.composer}</Text>
-              </View>
+              <TouchableOpacity onPress={() => navigation.navigate("Song Information", { song: song })} key={index}>
+                <View style={styles.songBox}>
+                  <Text style={styles.songText}>{song.name}, {song.composer}</Text>
+                </View>
+              </TouchableOpacity>
             ))}
           </View>
         </View>
@@ -81,7 +80,6 @@ export default VolEventDetailsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 20,
   },
@@ -89,33 +87,53 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   item: {
-    backgroundColor: '#f2f2f2',
     borderRadius: 10,
     padding: 20,
     marginBottom: 20,
+    
   },
-  label: {
-    fontSize: 18,
+  locationTitle: {
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
   },
-  subLabel: {
-    fontSize: 14,
+  dateSubtitle: {
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
     color: '#666',
   },
-  info: {
-    fontSize: 16,
+  dateInfo: {
+    fontSize: 18,
     marginBottom: 10,
+    color: '#444',
+  },
+  songsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#666',
   },
   songsContainer: {
-    marginTop: 5,
+    marginTop: 10,
   },
-  songName: {
-    fontSize: 14,
-    marginBottom: 3,
-    color: '#333',
+  songBox: {
+    backgroundColor: '#f8f2ff', 
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 1,
   },
-
-})
+  songText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});

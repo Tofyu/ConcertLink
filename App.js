@@ -15,6 +15,7 @@ import GroupRegisterScreen from './screens/GroupRegisterScreen';
 import GroupUpdateScreen from './screens/GroupUpdateScreen';
 import VolFeedbackScreen from './screens/VolFeedbackScreen';
 import VolEventDetailsScreen from './screens/VolEventDetailsScreen';
+import VolunteerAvailableDatesScreen from './screens/VolunteerAvailableDatesScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,7 +37,8 @@ const ManagerStack = () => {
     <Stack.Navigator>
         <Stack.Screen name="Event Requests" component={EventRequestsScreen} options={{ headerShown: false }} />
          <Stack.Screen name="Event Details" component={EventDetailsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Group Update" component={GroupUpdateScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Group Update" component={GroupUpdateScreen} />
+      <Stack.Screen name="AvailableDate" component={VolunteerAvailableDatesScreen} />
     </Stack.Navigator>
   );
 };

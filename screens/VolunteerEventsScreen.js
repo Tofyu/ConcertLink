@@ -28,6 +28,17 @@ const VolunteerEventsScreen = ({ navigation }) => {
     return groupID;
   };
 
+  // Function to handle user logout
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      // You can navigate to your login or authentication screen here
+      navigation.navigate('Login'); // Adjust this line as per your navigation setup
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   useEffect(() => {
     // Add a navigation listener to re-fetch data when the screen is focused
     const unsubscribe = navigation.addListener('focus', () => {
@@ -117,8 +128,17 @@ const VolunteerEventsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:'flex-start' }}>
       {/* Welcome Text */}
       <Text style={styles.welcomeText}>Welcome, {volunteerUser}!</Text>
+      <IconButton
+    style={{ marginTop: -5 }}
+    icon="logout"
+    onPress={handleLogout}
+    color="silver" // Adjust the color as needed
+  />
+</View>
       {/* Show community name if there is, otherwise show create buttom */}
       <View style={{ alignItems: 'flex-end', margin: 10 }}>
         {groupName === null ? (
@@ -126,7 +146,7 @@ const VolunteerEventsScreen = ({ navigation }) => {
             Register Your Community
           </Button>
         ) : (
-          <Text variant="titleMedium" style={{color:'gold'}}>{groupName}</Text>
+          <Text variant="titleMedium" style={{color:'teal'}}>{groupName}</Text>
         )}
       </View>
       <Divider />
@@ -156,8 +176,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    margin:5
   },
   welcomeText: {
     fontSize: 24,
