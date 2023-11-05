@@ -42,6 +42,7 @@ const VolProfileScreen = ({ navigation }) => {
         setName(user.name)
         setEmail(user.email || 'Enter Email')
         setGrade(user.grade || 'Enter grade')
+        setSchool(user.school || 'Enter school')
         setInstrument(user.instrument || 'Enter instrument')
         setPhone(user.phone || 'Enter phone')
         setSelectedGroup[docSnap.data().volunteerGroupID]
